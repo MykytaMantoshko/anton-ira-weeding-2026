@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+/* Fonts from public/font */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url("/font/Montserrat-Regular.woff2") format("woff2"),
+    url("/font/Montserrat-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src:
+    url("/font/Montserrat-Medium.woff2") format("woff2"),
+    url("/font/Montserrat-Medium.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src:
+    url("/font/Montserrat-SemiBold.woff2") format("woff2"),
+    url("/font/Montserrat-SemiBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url("/font/CormorantGaramond-Regular.woff2") format("woff2"),
+    url("/font/CormorantGaramond-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Kapakana";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url("/font/Kapakana-Regular.woff2") format("woff2"),
+    url("/font/Kapakana-Regular.woff") format("woff");
+}
+
+/* Tailwind v4 theme (ignore "Unknown at rule" in IDE) */
+@theme {
+  --color-site: #f6f1ec;
+  --color-ink: #262824;
+  --color-green: #616956;
+  --color-red: red;
+}
+
+:root {
+  --font-sans: "Montserrat", sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --font-kapakana: "Kapakana", sans-serif;
+  --color-bg: #f6f1ec;
+  --color-text: #262824;
+  --color-green: #616956;
+  --color-red: #ac1f1f;
+}
+
+html,
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+b,
+strong {
+  font-weight: 600;
+}
+
+main > section {
+  z-index: 2;
+  position: relative;
+}
+
+/* Date on first screen: single baseline for digits (Montserrat lining figures) */
+.date-hero {
+  font-family: var(--font-sans);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings:
+    "lnum" 1,
+    "tnum" 1;
+  line-height: 1;
+}
+
+/* Full-height lining figures for numbers (e.g. 00:00) */
+.number-fix {
+  font-family: var(--font-sans);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings:
+    "lnum" 1,
+    "tnum" 1;
+  line-height: 1;
+}
+
+.time-with-lines {
+  position: relative;
+  width: 100%;
+}
+
+.time-with-lines::before,
+.time-with-lines::after {
+  content: "";
+  width: 1.375rem;
+  height: 1px;
+  background: white;
+  flex-shrink: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -1.375rem;
+}
+.time-with-lines::after {
+  right: -1.375rem;
+  left: auto;
+}
+
+h1,
+.font-h1 {
+  font-size: 2.5rem;
+  font-family: var(--font-serif);
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+h2,
+.font-h2 {
+  font-size: 1.75rem;
+  font-family: var(--font-serif);
+  line-height: 1.1;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.font-kapakana {
+  font-family: var(--font-kapakana);
+}
+
+/* Gallery – CSS-only infinite scroll */
+
+.gallery-track {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.625rem;
+  width: max-content;
+  animation: gallery-scroll 45s linear infinite;
+}
+.gallery-item {
+  flex-shrink: 0;
+  width: min(75vw, 16.625rem);
+  min-width: min(75vw, 16.625rem);
+}
+.gallery-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1.55;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+@keyframes gallery-scroll {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.bordered-dotted {
+  border-width: 2px 0px;
+  border-style: dashed;
+  border-color: var(--color-site);
+}
+
+.clothes-slider-track {
+  gap: 0.25rem;
+  transition: transform 0.3s ease-out;
+}
+
+/* RSVP radio: 1.5rem circle, white; checked: 1rem inner circle #656E5D */
+.rsvp-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background-color: #fff;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.rsvp-radio:checked {
+  background-color: #fff;
+  background-image: radial-gradient(
+    circle 0.5rem at center,
+    #656e5d 0%,
+    #656e5d 0.5rem,
+    transparent 0.5rem
+  );
+}
+
+/* RSVP checkbox: 1.5rem square (not circle), white; checked: 1rem circle inside #656E5D */
+.rsvp-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0;
+  background-color: #fff;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.rsvp-checkbox:checked {
+  background-color: #fff;
+  background-image: linear-gradient(#656e5d, #656e5d);
+  background-size: 1rem 1rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.rsvp-radio-label span,
+.rsvp-checkbox-label span {
+  color: #3d3c3b;
+}
+
+#rsvp-form-section {
+  scroll-margin-top: 60px;
+}
+
+/* Preloader – panels slide out to the sides */
+.preloader {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+.preloader.preloader-hidden {
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear 0.5s;
+}
+
+.preloader-inner {
+  position: absolute;
+  inset: 0;
+}
+
+.preloader-left,
+.preloader-right {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 51%;
+  transition: transform 3s cubic-bezier(0.32, 0.72, 0.2, 1);
+}
+
+.preloader-left {
+  left: 0;
+}
+
+.preloader-right {
+  left: 50%;
+}
+
+.preloader.preloader-open .preloader-left {
+  transform: translateX(-150%);
+}
+
+.preloader.preloader-open .preloader-right {
+  transform: translateX(150%);
+}
