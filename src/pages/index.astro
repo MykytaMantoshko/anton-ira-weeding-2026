@@ -591,9 +591,14 @@ const clothesSlides = [
             class="rsvp-textarea w-full px-5 py-3 mb-6 rounded-lg bg-white text-ink placeholder:text-[#6b6560] focus:outline-none focus:border-green transition-colors resize-y min-h-24"
           ></textarea>
 
+          <span
+            id="rsvp-error-submit"
+            class="rsvp-error text-red text-sm text-center hidden mb-2"
+            aria-live="polite"></span>
           <button
             type="submit"
-            class="w-auto self-center cursor-pointer py-2.5 px-4 border border-green rounded-lg text-green font-semibold uppercase leading-none transition-all hover:bg-green hover:text-white"
+            id="rsvp-submit"
+            class="w-auto self-center cursor-pointer py-2.5 px-4 border border-green rounded-lg text-green font-semibold uppercase leading-none transition-all hover:bg-green hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             ПІДТВЕРДИТИ
           </button>

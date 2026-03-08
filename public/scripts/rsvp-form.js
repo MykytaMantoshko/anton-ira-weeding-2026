@@ -9,13 +9,26 @@
   var errorFirstName = document.getElementById("rsvp-error-firstName");
   var errorLastName = document.getElementById("rsvp-error-lastName");
   var errorAttendance = document.getElementById("rsvp-error-attendance");
+  var errorSubmit = document.getElementById("rsvp-error-submit");
+  var submitBtn = document.getElementById("rsvp-submit");
 
   var lastSubmittedData = null;
+
+  var API_RSVP = "/api/rsvp";
+
+  function getSubmitUrl() {
+    return API_RSVP;
+  }
+
+  function getPrefillUrl(firstName, lastName) {
+    return API_RSVP + "?firstName=" + encodeURIComponent(firstName) + "&lastName=" + encodeURIComponent(lastName);
+  }
 
   var messages = {
     firstName: "Будь ласка, вкажіть ім'я",
     lastName: "Будь ласка, вкажіть прізвище",
     attendance: "Будь ласка, оберіть, чи будете ви на весіллі",
+    submitError: "Не вдалося зберегти. Перевірте інтернет і спробуйте ще раз.",
   };
 
   function getAttendance() {
@@ -60,6 +73,12 @@
     }
   }
 
+  function setSubmitLoading(loading) {
+    if (!submitBtn) return;
+    submitBtn.disabled = loading;
+    submitBtn.textContent = loading ? "Збереження…" : "ПІДТВЕРДИТИ";
+  }
+
   function validate() {
     var data = collectFormData();
     var valid = true;
@@ -67,6 +86,7 @@
     hideError(errorFirstName);
     hideError(errorLastName);
     hideError(errorAttendance);
+    hideError(errorSubmit);
     setInputInvalid(firstNameInput, false);
     setInputInvalid(lastNameInput, false);
 
@@ -92,12 +112,6 @@
     if (formSection) {
       formSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }
-
-  /** Placeholder: send data to Google Sheets. Implement later. */
-  function sendToGoogleSheets(data) {
-    // TODO: integrate with Google Sheets (e.g. Google Apps Script Web App or serverless function)
-    console.log("RSVP data (would send to Google):", data);
   }
 
   function showForm() {
@@ -133,6 +147,99 @@
     if (notes) notes.value = data.notes || "";
   }
 
+  function applyFetchedData(data) {
+    if (!data) return;
+    var payload = {
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
+      attendance: data.attendance || "",
+      alcohol: Array.isArray(data.alcohol) ? data.alcohol : [],
+      notes: data.notes || "",
+    };
+    restoreForm(payload);
+  }
+
+  function sendToGoogleSheets(data, onSuccess, onError) {
+    var url = getSubmitUrl();
+    setSubmitLoading(true);
+    hideError(errorSubmit);
+    fetch(url, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        attendance: data.attendance,
+        alcohol: data.alcohol,
+        notes: data.notes,
+      }),
+    })
+      .then(function (res) {
+        setSubmitLoading(false);
+        if (res.ok) {
+          if (onSuccess) onSuccess();
+        } else {
+          res.text().then(function (text) {
+            var detail = res.status + " " + res.statusText + (text ? ": " + text.slice(0, 200) : "");
+            if (onError) onError(messages.submitError + " (" + detail + ")");
+          }).catch(function () {
+            var detail = res.status + " " + res.statusText;
+            if (onError) onError(messages.submitError + " (" + detail + ")");
+          });
+        }
+      })
+      .catch(function (err) {
+        setSubmitLoading(false);
+        var detail = (err && err.message) ? err.message : String(err);
+        if (onError) onError(messages.submitError + " (" + detail + ")");
+      });
+  }
+
+  function onSubmitSuccess(data) {
+    lastSubmittedData = data;
+    if (data.attendance === "yes") {
+      showThankYouYes(data.firstName);
+    } else {
+      showThankYouNo();
+    }
+  }
+
+  function onSubmitError(msg) {
+    showError(errorSubmit, msg || messages.submitError);
+    scrollToFormSection();
+  }
+
+  function tryPrefillFromUrl() {
+    var params = new URLSearchParams(window.location.search);
+    var firstName = (params.get("firstName") || params.get("name") || "").trim();
+    var lastName = (params.get("lastName") || params.get("surname") || "").trim();
+    if (typeof decodeURIComponent === "function") {
+      try {
+        if (params.get("firstName")) firstName = decodeURIComponent(firstName);
+        if (params.get("lastName")) lastName = decodeURIComponent(lastName);
+        if (params.get("name")) firstName = decodeURIComponent(firstName);
+        if (params.get("surname")) lastName = decodeURIComponent(lastName);
+      } catch (e) {}
+    }
+    if (!firstName || !lastName) return;
+    var getUrl = getPrefillUrl(firstName, lastName);
+    fetch(getUrl, { method: "GET" })
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
+        if (json && json.found && json.data) {
+          applyFetchedData(json.data);
+        } else if (firstName && lastName) {
+          if (firstNameInput) firstNameInput.value = firstName;
+          if (lastNameInput) lastNameInput.value = lastName;
+        }
+      })
+      .catch(function () {
+        if (firstNameInput) firstNameInput.value = firstName;
+        if (lastNameInput) lastNameInput.value = lastName;
+      });
+  }
+
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -141,13 +248,11 @@
         return;
       }
       var data = collectFormData();
-      lastSubmittedData = data;
-      sendToGoogleSheets(data);
-      if (data.attendance === "yes") {
-        showThankYouYes(data.firstName);
-      } else {
-        showThankYouNo();
-      }
+      sendToGoogleSheets(data, function () {
+        onSubmitSuccess(data);
+      }, function (msg) {
+        onSubmitError(msg);
+      });
     });
   }
 
@@ -187,4 +292,6 @@
       scrollToFormSection();
     });
   }
+
+  tryPrefillFromUrl();
 })();

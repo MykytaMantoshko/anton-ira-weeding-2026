@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.4",
     "@fontsource/cormorant-garamond": "^5.2.11",
     "@fontsource/kapakana": "^5.2.4",
     "@fontsource/montserrat": "^5.2.8",
