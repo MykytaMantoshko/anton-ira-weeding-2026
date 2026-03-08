@@ -432,177 +432,193 @@ const clothesSlides = [
         class="mb-27.5"
         innerClass="flex flex-col gap-6 items-center text-center"
       >
-        <h2 class="border-b">Анкета</h2>
-        <p class="mb-6">
-          Будь ласка, підтвердіть свою присутність на нашому весіллі заповнивши
-          коротку анкету<br />
-          <strong>до 00 травня</strong>
-        </p>
-        <form id="rsvp-form" class="rsvp-form w-full flex flex-col gap-6">
-          <div class="flex flex-col gap-1.25 mb-6">
-            <input
-              type="text"
-              id="rsvp-firstName"
-              name="firstName"
-              placeholder="Ім'я"
-              class="rsvp-input w-full h-10 bg-white text-ink placeholder:text-[#6b6560] focus:outline-none focus:border-green transition-colors rounded-lg text-center border border-transparent"
-              autocomplete="given-name"
-            />
+        <div
+          id="rsvp-form-preloader"
+          class="rsvp-form-preloader hidden w-full flex-col gap-4 items-center justify-center py-12"
+        >
+          <div
+            class="rsvp-form-preloader-spinner w-10 h-10 border-2 border-green border-t-transparent rounded-full animate-spin"
+            aria-hidden="true"
+          >
+          </div>
+          <p class="text-ink">Перевіряємо анкету…</p>
+        </div>
+        <div
+          id="rsvp-form-content"
+          class="rsvp-form-content w-full flex flex-col gap-6 items-center"
+        >
+          <h2 class="border-b">Анкета</h2>
+          <p class="mb-6">
+            Будь ласка, підтвердіть свою присутність на нашому весіллі
+            заповнивши коротку анкету<br />
+            <strong>до 00 травня</strong>
+          </p>
+          <form id="rsvp-form" class="rsvp-form w-full flex flex-col gap-6">
+            <div class="flex flex-col gap-1.25 mb-6">
+              <input
+                type="text"
+                id="rsvp-firstName"
+                name="firstName"
+                placeholder="Ім'я"
+                class="rsvp-input w-full h-10 bg-white text-ink placeholder:text-[#6b6560] focus:outline-none focus:border-green transition-colors rounded-lg text-center border border-transparent"
+                autocomplete="given-name"
+              />
+              <span
+                id="rsvp-error-firstName"
+                class="rsvp-error text-red text-sm text-center hidden mb-2"
+                aria-live="polite"></span>
+              <input
+                type="text"
+                id="rsvp-lastName"
+                name="lastName"
+                placeholder="Прізвище"
+                class="rsvp-input w-full h-10 bg-white text-ink placeholder:text-[#6b6560] focus:outline-none focus:border-green transition-colors rounded-lg text-center border border-transparent"
+                autocomplete="family-name"
+              />
+              <span
+                id="rsvp-error-lastName"
+                class="rsvp-error text-red text-sm text-center hidden"
+                aria-live="polite"></span>
+            </div>
+
+            <fieldset class="flex flex-col">
+              <legend class="font-semibold mb-6">
+                Чи плануєте ви бути на нашому весіллі?
+              </legend>
+              <div class="flex flex-row items-center justify-center gap-12.5">
+                <label
+                  class="rsvp-radio-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name="attendance"
+                    value="yes"
+                    class="rsvp-radio"
+                  />
+                  <span>Так</span>
+                </label>
+                <label
+                  class="rsvp-radio-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name="attendance"
+                    value="no"
+                    class="rsvp-radio"
+                  />
+                  <span>Ні</span>
+                </label>
+              </div>
+            </fieldset>
             <span
-              id="rsvp-error-firstName"
+              id="rsvp-error-attendance"
+              class="rsvp-error text-red text-sm -mt-4 hidden"
+              aria-live="polite"></span>
+
+            <fieldset class="flex flex-col my-6">
+              <legend class="font-semibold mb-6">
+                Ваші побажання по алкоголю:
+              </legend>
+              <div class="grid grid-cols-2 gap-5">
+                <label
+                  class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name="alcohol"
+                    value="whiskey"
+                    class="rsvp-checkbox"
+                  />
+                  <span>Віскі</span>
+                </label>
+                <label
+                  class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name="alcohol"
+                    value="white-wine"
+                    class="rsvp-checkbox"
+                  />
+                  <span>Вино біле</span>
+                </label>
+                <label
+                  class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name="alcohol"
+                    value="red-wine"
+                    class="rsvp-checkbox"
+                  />
+                  <span>Вино червоне</span>
+                </label>
+                <label
+                  class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name="alcohol"
+                    value="champagne"
+                    class="rsvp-checkbox"
+                  />
+                  <span>Шампанське</span>
+                </label>
+                <label
+                  class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name="alcohol"
+                    value="vodka"
+                    class="rsvp-checkbox"
+                  />
+                  <span>Горілка</span>
+                </label>
+                <label
+                  class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name="alcohol"
+                    value="cognac"
+                    class="rsvp-checkbox"
+                  />
+                  <span>Коньяк</span>
+                </label>
+                <label
+                  class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name="alcohol"
+                    value="rum"
+                    class="rsvp-checkbox"
+                  />
+                  <span>Ром</span>
+                </label>
+              </div>
+            </fieldset>
+            <textarea
+              name="notes"
+              placeholder="Тут ви можете зазначити будь-яку важливу для вас інформацію..."
+              rows="4"
+              class="rsvp-textarea w-full px-5 py-3 mb-6 rounded-lg bg-white text-ink placeholder:text-[#6b6560] focus:outline-none focus:border-green transition-colors resize-y min-h-24"
+            ></textarea>
+
+            <span
+              id="rsvp-error-submit"
               class="rsvp-error text-red text-sm text-center hidden mb-2"
               aria-live="polite"></span>
-            <input
-              type="text"
-              id="rsvp-lastName"
-              name="lastName"
-              placeholder="Прізвище"
-              class="rsvp-input w-full h-10 bg-white text-ink placeholder:text-[#6b6560] focus:outline-none focus:border-green transition-colors rounded-lg text-center border border-transparent"
-              autocomplete="family-name"
-            />
-            <span
-              id="rsvp-error-lastName"
-              class="rsvp-error text-red text-sm text-center hidden"
-              aria-live="polite"></span>
-          </div>
-
-          <fieldset class="flex flex-col">
-            <legend class="font-semibold mb-6">
-              Чи плануєте ви бути на нашому весіллі?
-            </legend>
-            <div class="flex flex-row items-center justify-center gap-12.5">
-              <label
-                class="rsvp-radio-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="radio"
-                  name="attendance"
-                  value="yes"
-                  class="rsvp-radio"
-                />
-                <span>Так</span>
-              </label>
-              <label
-                class="rsvp-radio-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="radio"
-                  name="attendance"
-                  value="no"
-                  class="rsvp-radio"
-                />
-                <span>Ні</span>
-              </label>
-            </div>
-          </fieldset>
-          <span
-            id="rsvp-error-attendance"
-            class="rsvp-error text-red text-sm -mt-4 hidden"
-            aria-live="polite"></span>
-
-          <fieldset class="flex flex-col my-6">
-            <legend class="font-semibold mb-6">
-              Ваші побажання по алкоголю:
-            </legend>
-            <div class="grid grid-cols-2 gap-5">
-              <label
-                class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name="alcohol"
-                  value="whiskey"
-                  class="rsvp-checkbox"
-                />
-                <span>Віскі</span>
-              </label>
-              <label
-                class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name="alcohol"
-                  value="white-wine"
-                  class="rsvp-checkbox"
-                />
-                <span>Вино біле</span>
-              </label>
-              <label
-                class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name="alcohol"
-                  value="red-wine"
-                  class="rsvp-checkbox"
-                />
-                <span>Вино червоне</span>
-              </label>
-              <label
-                class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name="alcohol"
-                  value="champagne"
-                  class="rsvp-checkbox"
-                />
-                <span>Шампанське</span>
-              </label>
-              <label
-                class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name="alcohol"
-                  value="vodka"
-                  class="rsvp-checkbox"
-                />
-                <span>Горілка</span>
-              </label>
-              <label
-                class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name="alcohol"
-                  value="cognac"
-                  class="rsvp-checkbox"
-                />
-                <span>Коньяк</span>
-              </label>
-              <label
-                class="rsvp-checkbox-label flex items-center gap-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  name="alcohol"
-                  value="rum"
-                  class="rsvp-checkbox"
-                />
-                <span>Ром</span>
-              </label>
-            </div>
-          </fieldset>
-          <textarea
-            name="notes"
-            placeholder="Тут ви можете зазначити будь-яку важливу для вас інформацію..."
-            rows="4"
-            class="rsvp-textarea w-full px-5 py-3 mb-6 rounded-lg bg-white text-ink placeholder:text-[#6b6560] focus:outline-none focus:border-green transition-colors resize-y min-h-24"
-          ></textarea>
-
-          <span
-            id="rsvp-error-submit"
-            class="rsvp-error text-red text-sm text-center hidden mb-2"
-            aria-live="polite"></span>
-          <button
-            type="submit"
-            id="rsvp-submit"
-            class="w-auto self-center cursor-pointer py-2.5 px-4 border border-green rounded-lg text-green font-semibold uppercase leading-none transition-all hover:bg-green hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            ПІДТВЕРДИТИ
-          </button>
-        </form>
+            <button
+              type="submit"
+              id="rsvp-submit"
+              class="w-auto self-center cursor-pointer py-2.5 px-4 border border-green rounded-lg text-green font-semibold uppercase leading-none transition-all hover:bg-green hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              ПІДТВЕРДИТИ
+            </button>
+          </form>
+        </div>
       </Section>
       <Section
         id="rsvp-thank-you-yes"

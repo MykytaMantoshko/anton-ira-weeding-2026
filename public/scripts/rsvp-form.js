@@ -11,10 +11,14 @@
   var errorAttendance = document.getElementById("rsvp-error-attendance");
   var errorSubmit = document.getElementById("rsvp-error-submit");
   var submitBtn = document.getElementById("rsvp-submit");
+  var formPreloader = document.getElementById("rsvp-form-preloader");
+  var formContent = document.getElementById("rsvp-form-content");
 
   var lastSubmittedData = null;
 
   var API_RSVP = "/api/rsvp";
+  var RSVP_COOKIE = "rsvp_data";
+  var RSVP_COOKIE_DAYS = 365;
 
   function getSubmitUrl() {
     return API_RSVP;
@@ -114,6 +118,47 @@
     }
   }
 
+  function showFormPreloader() {
+    if (formPreloader) formPreloader.classList.remove("hidden");
+    if (formContent) formContent.classList.add("hidden");
+  }
+
+  function hideFormPreloader() {
+    if (formPreloader) formPreloader.classList.add("hidden");
+    if (formContent) formContent.classList.remove("hidden");
+  }
+
+  function setRsvpCookie(data) {
+    if (!data || !data.firstName || !data.lastName) return;
+    try {
+      var value = encodeURIComponent(JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        attendance: data.attendance || "",
+        alcohol: data.alcohol || [],
+        notes: data.notes || ""
+      }));
+      var expires = new Date();
+      expires.setDate(expires.getDate() + RSVP_COOKIE_DAYS);
+      document.cookie = RSVP_COOKIE + "=" + value + "; path=/; expires=" + expires.toUTCString() + "; SameSite=Lax";
+    } catch (e) {}
+  }
+
+  function getRsvpCookie() {
+    try {
+      var name = RSVP_COOKIE + "=";
+      var parts = document.cookie.split(";");
+      for (var i = 0; i < parts.length; i++) {
+        var part = parts[i].trim();
+        if (part.indexOf(name) === 0) {
+          var json = decodeURIComponent(part.slice(name.length));
+          return JSON.parse(json);
+        }
+      }
+    } catch (e) {}
+    return null;
+  }
+
   function showForm() {
     if (formSection) formSection.classList.remove("hidden");
     if (thankYouYes) thankYouYes.classList.add("hidden");
@@ -161,27 +206,32 @@
 
   function sendToGoogleSheets(data, onSuccess, onError) {
     var url = getSubmitUrl();
+    var payload = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      attendance: data.attendance,
+      alcohol: data.alcohol,
+      notes: data.notes,
+    };
     setSubmitLoading(true);
     hideError(errorSubmit);
     fetch(url, {
       method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        attendance: data.attendance,
-        alcohol: data.alcohol,
-        notes: data.notes,
-      }),
+      body: JSON.stringify(payload),
     })
       .then(function (res) {
         setSubmitLoading(false);
         if (res.ok) {
-          if (onSuccess) onSuccess();
+          res.json().then(function (body) {
+            if (onSuccess) onSuccess();
+          }).catch(function () {
+            if (onSuccess) onSuccess();
+          });
         } else {
           res.text().then(function (text) {
-            var detail = res.status + " " + res.statusText + (text ? ": " + text.slice(0, 200) : "");
+            var detail = res.status + " " + res.statusText + (text ? ": " + text.slice(0, 300) : "");
             if (onError) onError(messages.submitError + " (" + detail + ")");
           }).catch(function () {
             var detail = res.status + " " + res.statusText;
@@ -198,6 +248,7 @@
 
   function onSubmitSuccess(data) {
     lastSubmittedData = data;
+    setRsvpCookie(data);
     if (data.attendance === "yes") {
       showThankYouYes(data.firstName);
     } else {
@@ -222,22 +273,42 @@
         if (params.get("surname")) lastName = decodeURIComponent(lastName);
       } catch (e) {}
     }
-    if (!firstName || !lastName) return;
+    if (!firstName || !lastName) {
+      tryPrefillFromCookie();
+      return;
+    }
+    showFormPreloader();
     var getUrl = getPrefillUrl(firstName, lastName);
     fetch(getUrl, { method: "GET" })
       .then(function (res) { return res.json(); })
       .then(function (json) {
+        hideFormPreloader();
         if (json && json.found && json.data) {
           applyFetchedData(json.data);
-        } else if (firstName && lastName) {
+          setRsvpCookie({
+            firstName: json.data.firstName,
+            lastName: json.data.lastName,
+            attendance: json.data.attendance,
+            alcohol: json.data.alcohol,
+            notes: json.data.notes
+          });
+        } else {
           if (firstNameInput) firstNameInput.value = firstName;
           if (lastNameInput) lastNameInput.value = lastName;
         }
       })
       .catch(function () {
+        hideFormPreloader();
         if (firstNameInput) firstNameInput.value = firstName;
         if (lastNameInput) lastNameInput.value = lastName;
       });
+  }
+
+  function tryPrefillFromCookie() {
+    var data = getRsvpCookie();
+    if (data && (data.firstName || data.lastName)) {
+      restoreForm(data);
+    }
   }
 
   if (form) {
