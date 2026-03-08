@@ -80,7 +80,7 @@ const clothesSlides = [
   </head>
   <body class="w-full max-w-full overflow-x-hidden">
     <main class="w-full relative">
-      <section id="preloader" class="preloader">
+      <section id="preloader" class="hidden preloader">
         <div class="preloader-inner">
           <div class="preloader-left">
             <Image
@@ -113,6 +113,11 @@ const clothesSlides = [
         class="mt-12.5 mb-30"
         innerClass="flex flex-col gap-6 items-center text-center"
       >
+        <img
+          src="/arrows/arrow-1.svg"
+          alt=""
+          class="absolute -top-21 -right-15 w-29 h-54.5 user-select-none pointer-events-none"
+        />
         <p class="date-hero font-h1 text-[1.5rem]!">21 | 06 | 2026</p>
         <h1 class="font-kapakana">Wedding day</h1>
         <div class="flex flex-col text-center items-center">
@@ -137,6 +142,11 @@ const clothesSlides = [
         class="mb-22.5"
         innerClass="flex flex-col gap-6 items-center text-center"
       >
+        <img
+          src="/arrows/arrow-2.svg"
+          alt=""
+          class="absolute -top-23.5 -left-18 w-71 h-77 user-select-none pointer-events-none"
+        />
         <h2>Дорогі друзі та рідні!</h2>
         <p>
           З радістю та любовʼю запрошуємо вас розділити з нами особливий день <nobr
@@ -148,6 +158,11 @@ const clothesSlides = [
         class="mb-22.5"
         innerClass="flex flex-col gap-5 items-center text-center"
       >
+        <img
+          src="/arrows/arrow-3.svg"
+          alt=""
+          class="absolute top-47 right-7.5 w-25.5 h-22 user-select-none pointer-events-none"
+        />
         <p class="text-green font-semibold -mb-2">Червень</p>
         <div
           class="calendar flex flex-col gap-6 w-full max-w-71 mx-auto text-green"
@@ -434,10 +449,10 @@ const clothesSlides = [
       >
         <div
           id="rsvp-form-preloader"
-          class="rsvp-form-preloader hidden w-full flex-col gap-4 items-center justify-center py-12"
+          class="rsvp-form-preloader hidden w-full flex flex-col gap-4 items-center justify-center py-12 text-center"
         >
           <div
-            class="rsvp-form-preloader-spinner w-10 h-10 border-2 border-green border-t-transparent rounded-full animate-spin"
+            class="rsvp-form-preloader-spinner w-10 h-10 border-2 border-green border-t-transparent rounded-full animate-spin shrink-0"
             aria-hidden="true"
           >
           </div>

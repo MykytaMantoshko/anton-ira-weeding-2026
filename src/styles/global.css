@@ -89,6 +89,9 @@ main > section {
   z-index: 2;
   position: relative;
 }
+section > div {
+  position: relative;
+}
 
 /* Date on first screen: single baseline for digits (Montserrat lining figures) */
 .date-hero {
