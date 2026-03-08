@@ -1,16 +1,18 @@
 ---
 interface Props {
-	class?: string;
-	innerClass?: string;
-	id?: string;
+  class?: string;
+  innerClass?: string;
+  id?: string;
 }
 
 const { class: className, innerClass, id } = Astro.props;
-const divClass = ['w-full mx-auto px-4 max-w-108', innerClass].filter(Boolean).join(' ');
+const divClass = ["w-full mx-auto px-2.5 max-w-108", innerClass]
+  .filter(Boolean)
+  .join(" ");
 ---
 
 <section class={className} id={id}>
-	<div class={divClass}>
-		<slot />
-	</div>
+  <div class={divClass}>
+    <slot />
+  </div>
 </section>
